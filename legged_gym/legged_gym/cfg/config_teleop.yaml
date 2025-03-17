@@ -10,7 +10,7 @@ defaults:
   - noise: noise_teleop
   - normalization: normalization_teleop
   - train: ppo_teleop
-  - rewards: rewards_teleop
+  - rewards: rewards_teleop_omnih2o_teacher
   - sim: sim_teleop
   - terrain: terrain_teleop
   - viewer: viewer_base
@@ -37,7 +37,7 @@ checkpoint: 0
 
 joystick: False
 tmp_freeze_upper: False
-max_iterations: 1000000
+max_iterations: 1000
 horovod: False
 resume: False
 experiment_name: null

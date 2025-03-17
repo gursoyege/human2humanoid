@@ -398,7 +398,7 @@ class H1TeleopCfg( LeggedRobotCfg ):
         # motion_file = '{LEGGED_GYM_ROOT_DIR}/resources/motions/h1/amass_phc_clean.pkl'
         # motion_file = '{LEGGED_GYM_ROOT_DIR}/resources/motions/h1/amass_phc_clean_smooth.pkl'
 
-        motion_file = '{LEGGED_GYM_ROOT_DIR}/resources/motions/h1/amass_phc_filtered.pkl'
+        motion_file = '{LEGGED_GYM_ROOT_DIR}/resources/motions/h1/stable_punch.pkl'
 
         skeleton_file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/h1/xml/h1.xml'
         marker_file = '{LEGGED_GYM_ROOT_DIR}/resources/objects/Marker/traj_marker.urdf'
