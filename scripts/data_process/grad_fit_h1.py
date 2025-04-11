@@ -25,10 +25,12 @@ import argparse
 def load_amass_data(data_path):
     entry_data = dict(np.load(open(data_path, "rb"), allow_pickle=True))
 
-    if not 'mocap_framerate' in  entry_data:
-        return 
-    framerate = entry_data['mocap_framerate']
-
+    if 'mocap_framerate' in  entry_data:
+        framerate = entry_data['mocap_framerate']
+    elif 'mocap_frame_rate' in entry_data:
+        framerate = entry_data['mocap_frame_rate']
+    else:
+        return {"flag": "missing_framerate"}
 
     root_trans = entry_data['trans']
     pose_aa = np.concatenate([entry_data['poses'][:, :66], np.zeros((root_trans.shape[0], 6))], axis = -1)
@@ -46,10 +48,10 @@ def load_amass_data(data_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--amass_root", type=str, default="/hdd/zen/data/ActBound/AMASS/AMASS_Complete")
+    parser.add_argument("--amass_root", type=str, default="data/AMASS/AMASS_Partial")
     args = parser.parse_args()
     
-    device = torch.device("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     h1_rotation_axis = torch.tensor([[
         [0, 0, 1], # l_hip_yaw
@@ -114,6 +116,10 @@ if __name__ == "__main__":
     pbar = tqdm(key_name_to_pkls.keys())
     for data_key in pbar:
         amass_data = load_amass_data(key_name_to_pkls[data_key])
+        if "flag" in amass_data:
+            print(f"Skipping {key_name_to_pkls[data_key]}, missing framerate")
+            continue 
+        
         skip = int(amass_data['fps']//30)
         trans = torch.from_numpy(amass_data['trans'][::skip]).float().to(device)
         N = trans.shape[0]
@@ -168,10 +174,10 @@ if __name__ == "__main__":
                 "fps": 30
                 }
         
-        print(f"dumping {data_key} for testing, remove the line if you want to process all data")
-        import ipdb; ipdb.set_trace()
-        joblib.dump(data_dump, "data/h1/test.pkl")
+        # print(f"dumping {data_key} for testing, remove the line if you want to process all data")
+        # import ipdb; ipdb.set_trace()
+        # joblib.dump(data_dump, "data/h1/test.pkl")
     
         
-    import ipdb; ipdb.set_trace()
-    joblib.dump(data_dump, "data/h1/amass_all.pkl")
+    # import ipdb; ipdb.set_trace()
+    joblib.dump(data_dump, "data/h1/amass_partial_v1.pkl")
